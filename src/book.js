@@ -58,19 +58,31 @@ class BookList extends Component{
 
 
     for (var i = 0; i < this.props.bookList.length; i++) {
-      if (this.props.bookList[i].state === this.props.section){
+      if (this.props.section) {
+        if (this.props.bookList[i].state === this.props.section){
+          selectedBooks.push(this.props.bookList[i]);
+
+        }
+      }else {
         selectedBooks.push(this.props.bookList[i]);
 
       }
+
     }
         return(
             <div id ={this.props.id}>
             {selectedBooks.map((book)=>(
-              <li className ={book.class} key ={book.title}>
+              <li className ={book.title} key ={book.id}>
                 <div className="book">
                   <div className="book-top">
-                    <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url("${book.bookUrl}")` }}></div>
+                  {book.backgroundImage?(
+                    <div className="book-cover" style={{ width: 128, height: 193, backgroundImage:`url("${book.backgroundImage}")` }}></div>
+                  ):(
+                    <div className="book-cover" style={{ width: 128, height: 193, backgroundImage:`url("${book.imageLinks.thumbnail}")` }}></div>
+
+                  )}
                     <div className="book-shelf-changer">
+                    {book.state ? (
                       <select defaultValue ={book.state} onChange ={onChange} className = "options">
                         <option  value="move" disabled>Move to...</option>
                         <option  value="currentlyReading">Currently Reading</option>
@@ -78,10 +90,27 @@ class BookList extends Component{
                         <option  value="Read">Read</option>
                         <option autoFocus value="none">None</option>
                       </select>
+                    ):(
+                      <select defaultValue ='none' onChange ={onChange} className = "options">
+                        <option  value="move" disabled>Move to...</option>
+                        <option  value="currentlyReading">Currently Reading</option>
+                        <option  value="wantToRead">Want to Read</option>
+                        <option  value="Read">Read</option>
+                        <option autoFocus value="none">None</option>
+                      </select>
+
+                    )}
                     </div>
                   </div>
                   <div className="book-title">{book.title}</div>
-                  <div className="book-authors">{book.author}</div>
+                  {Array.isArray(book) ?(
+                    book.map((author) =>(
+                        <div className = "book-authors">author</div>
+                      ))
+
+                  ):(
+                    <div className="book-authors">{book.author}</div>
+                  )}
                 </div>
               </li>
               ))}
