@@ -3,6 +3,8 @@ import * as BooksAPI from './BooksAPI'
 import './App.css'
 import Search from './search.js'
 import BookList from './book.js'
+import {Link} from 'react-router-dom'
+import { Route } from 'react-router-dom'
 let bookList =[
   {
     "state":"currentlyReading",
@@ -73,51 +75,52 @@ class BooksApp extends React.Component {
 
   render() {
     return (
+      <div>
 
       <div className="app">
-        {this.state.showSearchPage  ? (
-          <Search/>
-        ) : (
-          <div className="list-books">
-            <div className="list-books-title">
-              <h1>MyReads</h1>
-            </div>
-            <div className="list-books-content">
-              <div>
-                <div className="bookshelf">
-                  <h2 className="bookshelf-title">Currently Reading</h2>
-                  <div className="bookshelf-books">
-                    <ol className="books-grid">
+          <Route path = '/addABook' render = {() => (
+            <Search dataBooks = {bookList}/>
+          )}/>
+          <Route path ='/' exact render={() => (
+
+        <div className="list-books">
+          <div className="list-books-title">
+            <h1>MyReads</h1>
+          </div>
+          <div className="list-books-content">
+            <div className="bookshelf">
+              <h2 className="bookshelf-title">Currently Reading</h2>
+                <div className="bookshelf-books">
+                  <ol className="books-grid">
                     <BookList id ="currentlyReadingSection" bookList = {bookList} section = 'currentlyReading'/>
-
-                    </ol>
-                  </div>
+                  </ol>
                 </div>
-                <div className="bookshelf">
-                  <h2 className="bookshelf-title">Want to Read</h2>
-                  <div className="bookshelf-books">
-                    <ol className="books-grid">
-
-                      <BookList id ="wantToReadSection" bookList = {bookList} section = 'wantToRead'/>
-                    </ol>
-                  </div>
-                </div>
+              </div>
+            <div className="bookshelf">
+              <h2 className="bookshelf-title">Want to Read</h2>
+              <div className="bookshelf-books">
+                <ol className="books-grid">
+                  <BookList id ="wantToReadSection" bookList = {bookList} section = 'wantToRead'/>
+                </ol>
+              </div>
+            </div>
                 <div className="bookshelf">
                   <h2 className="bookshelf-title">Read</h2>
                   <div className="bookshelf-books">
                     <ol className="books-grid">
-                    <BookList id ="readSection" bookList = {bookList} section = 'Read'/>
-
+                      <BookList id ="readSection" bookList = {bookList} section = 'Read'/>
                     </ol>
                   </div>
                 </div>
               </div>
             </div>
+          )}/>
+
             <div className="open-search">
-              <a onClick={() => this.setState({ showSearchPage: true })}>Add a book</a>
+              <Link to="/addABook">Add a book</Link>
             </div>
           </div>
-        )}
+
 
       </div>
     )

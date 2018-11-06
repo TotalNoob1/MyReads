@@ -1,7 +1,7 @@
 import * as BooksAPI from './BooksAPI'
 import React, { Component} from 'react'
 import BookList from './book.js'
-
+import {Link} from 'react-router-dom'
 let results = []
 
 class Search extends Component {
@@ -18,12 +18,14 @@ class Search extends Component {
           results = 'error'
         }else {
           results = value;
+          console.log(results);
         }
 
       }).catch(function () {
           results = 'error';
       })
       if (results ==='error') {
+        results = []
       }else {
         this.setState({showSearchresults:true})
       }
@@ -33,7 +35,7 @@ class Search extends Component {
     return(
       <div className="search-books">
         <div className="search-books-bar">
-          <a className="close-search" >Close</a>
+          <Link to ='/' className="close-search" >Close</Link>
           <div className="search-books-input-wrapper">
             {/*
               NOTES: The search from BooksAPI is limited to a particular set of search terms.
@@ -51,9 +53,10 @@ class Search extends Component {
         <div className="search-books-results">
           <ol className="books-grid">
           {this.state.showSearchresults ? (
-            <div>
-              <BookList bookList= {results} />
-            </div>
+              <div>
+                <BookList dataBooks ={this.props.dataBooks} results ={results} bookList= {results} />
+              </div>
+
             ):(
               <p>Please enter a valid response</p>
             )}
