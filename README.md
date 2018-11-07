@@ -1,3 +1,6 @@
+# Description
+This is an app that helps you keep track of your books.
+
 # To Begin
 
 Run the command ```git pull https://github.com/TotalNoob1/MyReads.git```
