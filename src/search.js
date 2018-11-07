@@ -6,32 +6,54 @@ let results = []
 
 class Search extends Component {
   state= {
-    showSearchresults:false
+    showSearchresults:false,
+    noresults:false
   }
 
-  inputChange(event){
-    if(event.target.value===' ' || !event.target.value|| event.target.value ===''){
-      return
-    }else {
-      BooksAPI.search(event.target.value).then(function (value) {
-        if (!value.length) {
-          results = 'error'
-        }else {
-          results = value;
-          console.log(results);
-        }
+  render() {
+    let anchor = this;
+    function inputChange(event){
+      if (event.target.value==='') {
+        anchor.setState({showSearchresults:false})
 
-      }).catch(function () {
-          results = 'error';
-      })
-      if (results ==='error') {
-        results = []
+      }
+      if(!event.target.value){
+      return
       }else {
-        this.setState({showSearchresults:true})
+        BooksAPI.search(event.target.value).then(function (value) {
+          if (!value.length) {
+            results = 'error'
+            anchor.setState({noresults:true})
+          }else {
+            results = value;
+            for (var i = 0; i < value.length; i++) {
+              for (var x = 0; x < anchor.props.dataBooks.length; x++) {
+                if (value[i].id === anchor.props.dataBooks[x].id) {
+                  value[i].shelf = anchor.props.dataBooks[x].shelf
+
+                }
+              }
+            }
+            anchor.setState({showSearchresults:true})
+            anchor.setState({noresults:false})
+
+          }
+
+        }).catch(function () {
+          results = 'error';
+          anchor.setState({noresults:true})
+        })
+        if (results ==='error') {
+          results = []
+        }else {
+          anchor.setState({showSearchresults:true})
+        }
+      }
+      if (event.target.value ==='') {
+        anchor.setState({noresults:true})
+
       }
     }
-  }
-  render() {
     return(
       <div className="search-books">
         <div className="search-books-bar">
@@ -45,7 +67,7 @@ class Search extends Component {
               However, remember that the BooksAPI.search method DOES search by title or author. So, don't worry if
               you don't find a specific author or title. Every search is limited by search terms.
             */}
-            <input type="text" onChange={this.inputChange.bind(this)} placeholder="Search by title or author"/>
+            <input type="text" onInput={inputChange} placeholder="Search by title or author"/>
 
 
           </div>
@@ -54,7 +76,13 @@ class Search extends Component {
           <ol className="books-grid">
           {this.state.showSearchresults ? (
               <div>
+              {this.state.noresults ?(
+                <p>No results found</p>
+
+              ):(
+
                 <BookList dataBooks ={this.props.dataBooks} results ={results} bookList= {results} />
+              )}
               </div>
 
             ):(
